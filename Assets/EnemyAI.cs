@@ -127,6 +127,7 @@ public class EnemyAI : MonoBehaviourPunCallbacks
             hasWeapon = true;
             Weapon = GetRandomWeapon();
             view.RPC("EnableWeapon", RpcTarget.AllBuffered);
+            animator.SetTrigger("OpenBox");
             LootBox.GetComponent<LootBox>().OpenBox();
         }
     }
