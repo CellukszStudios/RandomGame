@@ -627,7 +627,7 @@ MonoBehaviour:
     SynchronizeType: 2
     Name: hasGun
   - Type: 9
-    SynchronizeType: 2
+    SynchronizeType: 0
     Name: OpenBox
   m_SynchronizeLayers:
   - SynchronizeType: 2
