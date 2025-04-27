@@ -207,7 +207,7 @@ GameObject:
   - component: {fileID: 7479111515567982168}
   - component: {fileID: 5172697806588163133}
   - component: {fileID: 3996012615926975797}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -306,13 +306,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Health: 100
   Radius: 40
+  AimSpeed: 0.5
+  StoppingDistance: 20
   animator: {fileID: 7741460066644712660}
   Weapons:
   - {fileID: 7307595993042008440}
   LootBox:
     serializedVersion: 2
     m_Bits: 64
+  EnemyLayer:
+    serializedVersion: 2
+    m_Bits: 128
   Weapon: {fileID: 0}
+  EnemyPlayer: {fileID: 0}
 --- !u!54 &5172697806588163133
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -397,6 +403,37 @@ Transform:
   - {fileID: 1855403575706983865}
   - {fileID: 2130292904974945137}
   m_Father: {fileID: 5455234936846555451}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &950961812186260654
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8768285646178170909}
+  m_Layer: 0
+  m_Name: MuzzleSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8768285646178170909
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 950961812186260654}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.67, y: 0, z: 16.62}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7935935704279180226}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1387414471223906911
 GameObject:
@@ -1536,6 +1573,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7935935704279180226}
+  - component: {fileID: 6849588128515919615}
+  - component: {fileID: 6057508147661196169}
   m_Layer: 0
   m_Name: Revolver
   m_TagString: Untagged
@@ -1557,8 +1596,52 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7373007529253229210}
+  - {fileID: 8768285646178170909}
   m_Father: {fileID: 4115087863567519706}
   m_LocalEulerAnglesHint: {x: 275.931, y: 54.546, z: 34.884}
+--- !u!114 &6849588128515919615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7307595993042008440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 1
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &6057508147661196169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7307595993042008440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ddfad8405ad0549b460d840ab776dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shoot_delay: 0.5
+  current_ammo: 10
+  max_ammo: 10
+  reload_time: 2
+  MuzzleFlash: {fileID: 564892591165537678, guid: a854c66c543078b46839ff855c386f71, type: 3}
+  ShotSound: {fileID: 6479682013500601005, guid: 4c065e7a90233624e8e6f15bf7256aca, type: 3}
+  muzzle_spawn: {fileID: 8768285646178170909}
+  isReloading: 0
+  anim: {fileID: 7741460066644712660}
 --- !u!1 &7525361203162105758
 GameObject:
   m_ObjectHideFlags: 0

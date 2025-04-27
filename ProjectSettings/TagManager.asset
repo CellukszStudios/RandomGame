@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Bullet
   - LootBox
+  - FxTemporaire
   layers:
   - Default
   - TransparentFX
@@ -14,8 +15,8 @@ TagManager:
   - Water
   - UI
   - LootBox
-  - 
-  - 
+  - Player
+  - Enemy
   - 
   - 
   - 

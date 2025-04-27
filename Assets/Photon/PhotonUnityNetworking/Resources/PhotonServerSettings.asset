@@ -43,6 +43,9 @@ MonoBehaviour:
   - DisableWeapon
   - EnableWeapon
   - OpenBoxRPCAnim
+  - MuzzleFlashStart_RPC
+  - StartReloadAnimation
+  - RPC_MuzzleFlash
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0
