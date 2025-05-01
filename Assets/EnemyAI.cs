@@ -1,9 +1,18 @@
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.AI;
+using System.Collections.Generic;
+using System.Collections;
+using System.Linq;
 
 public class EnemyAI : MonoBehaviourPunCallbacks
 {
+    [Header("Team System")]
+    public bool isLeader = false;
+    public bool isRecruited = false;
+    public int MaxTeamSize = 10;
+    public List<GameObject> TeamMembers = new List<GameObject>();
+
     [Header("Enemy Variables")]
     public float Health = 100f;
     public float Radius = 40f;
@@ -17,6 +26,7 @@ public class EnemyAI : MonoBehaviourPunCallbacks
     public GameObject[] Weapons;
     public LayerMask LootBox;
     public LayerMask EnemyLayer;
+    public LayerMask FriendlyLayer;
 
     [Header("Weapons")]
     public GameObject Weapon;
@@ -25,6 +35,8 @@ public class EnemyAI : MonoBehaviourPunCallbacks
     private WeaponScript weapon_script;
 
     public GameObject EnemyPlayer;
+    public GameObject Boss;
+    public RecruiteList recruite_list;
 
     public enum states
     {
@@ -36,27 +48,44 @@ public class EnemyAI : MonoBehaviourPunCallbacks
 
     private states current_state;
 
+    private void Awake()
+    {
+        GameObject recruit_list_obj = GameObject.Find("RecruitableEnemyList");
+        recruite_list = recruit_list_obj.GetComponent<RecruiteList>();
+        if (!isLeader)
+            recruite_list.RecruitList.Add(gameObject);
+    }
+
     private void Start()
     {
         view = GetComponent<PhotonView>();
         agent = GetComponent<NavMeshAgent>();
 
-        if (view.IsMine) current_state = states.Roam;
+        if (PhotonNetwork.IsMasterClient)
+        {
+            current_state = states.Roam;
+            StartTeamChecking();
+        }
+    }
+
+    public void StartTeamChecking()
+    {
+        StartCoroutine(CheckTeam());
     }
 
     public Vector3 GetRandomPosAroundEnemy(float dist)
     {
-        Vector3 pos = (EnemyPlayer.transform.right+EnemyPlayer.transform.forward) * UnityEngine.Random.Range(-dist, dist);
+        Vector3 pos = (EnemyPlayer.transform.right + EnemyPlayer.transform.forward) * UnityEngine.Random.Range(-dist, dist);
 
         if (Vector3.Distance(pos, EnemyPlayer.transform.position) >= 40)
             return pos;
-        else 
+        else
             return GetRandomPosAroundEnemy(dist);
     }
 
     public GameObject GetRandomWeapon()
     {
-        GameObject Weapon = Weapons[Weapons.Length-1];
+        GameObject Weapon = Weapons[Weapons.Length - 1];
         return Weapon;
     }
 
@@ -67,7 +96,7 @@ public class EnemyAI : MonoBehaviourPunCallbacks
 
         GameObject NearestLootbox = cols[0].gameObject;
 
-        foreach(Collider col in cols)
+        foreach (Collider col in cols)
         {
             if (Vector3.Distance(transform.position, col.gameObject.transform.position) < Vector3.Distance(transform.position, NearestLootbox.transform.position))
                 NearestLootbox = col.gameObject;
@@ -92,15 +121,16 @@ public class EnemyAI : MonoBehaviourPunCallbacks
 
     private void Update()
     {
-        if (!view.IsMine) return;
+        if (!PhotonNetwork.IsMasterClient) return;
         UpdateAnimations();
-
         StateManager();
         Behaviour();
     }
 
     void Behaviour()
     {
+        if (isLeader && TeamMembers.Count < 10) Recruit();
+        if (agent.hasPath && Vector3.Distance(transform.position,agent.destination) < 3) MoveToRandpos();
         if (weapon_script)
             isReloading = weapon_script.isReloading;
 
@@ -145,17 +175,62 @@ public class EnemyAI : MonoBehaviourPunCallbacks
         }
     }
 
-    void Roam()
+    void MoveToRandpos()
     {
-        EnemyPlayer = GetNearestEnemy();
-
-        if (agent.hasPath) return;
-
         float RandX = UnityEngine.Random.Range(-500, 500);
         float RandZ = UnityEngine.Random.Range(-500, 500);
 
         Vector3 RandPos = new Vector3(RandX, 4, RandZ);
         agent.SetDestination(RandPos);
+        if (isLeader && TeamMembers.Count > 0)
+        {
+            foreach (GameObject member in TeamMembers)
+            {
+                if (member)
+                {
+                    Vector3 RandRandPos = new Vector3(RandPos.x + UnityEngine.Random.Range(-15, 15), RandPos.y, RandPos.z + UnityEngine.Random.Range(-15, 15));
+                    member.GetComponent<EnemyAI>().agent.SetDestination(RandRandPos);
+                }
+            }
+        }
+    }
+
+    void Roam()
+    {
+        EnemyPlayer = GetNearestEnemy();
+        if (isRecruited)
+        {
+            agent.SetDestination(Boss.GetComponent<EnemyAI>().agent.destination);
+            return;
+        }
+
+        if (isLeader && EnemyPlayer && TeamMembers.Count > 0)
+        {
+            foreach (GameObject member in TeamMembers)
+            {
+                if (member)
+                    member.GetComponent<EnemyAI>().EnemyPlayer = EnemyPlayer;
+            }
+        }
+
+        if (agent.hasPath) return;
+        MoveToRandpos();
+    }
+
+    void Recruit()
+    {
+        foreach (GameObject member in recruite_list.RecruitList)
+        {
+            if (TeamMembers.Count < MaxTeamSize)
+            {
+                if (!member.GetComponent<EnemyAI>().isRecruited)
+                {
+                    TeamMembers.Add(member);
+                    member.GetComponent<EnemyAI>().isRecruited = true;
+                    member.GetComponent<EnemyAI>().Boss = gameObject;
+                }
+            }
+        }
     }
 
     void Attack()
@@ -195,10 +270,13 @@ public class EnemyAI : MonoBehaviourPunCallbacks
         {
             hasWeapon = true;
             Weapon = GetRandomWeapon();
-            view.RPC("EnableWeapon", RpcTarget.AllBuffered);
+            int index = Weapons.ToList().IndexOf(Weapon);
+            view.RPC("EnableWeapon", RpcTarget.AllBuffered, index);
             view.RPC("OpenBoxRPCAnim", RpcTarget.All);
             LootBox.GetComponent<LootBox>().OpenBox();
             weapon_script = Weapon.GetComponent<WeaponScript>();
+            agent.SetDestination(transform.position);
+            MoveToRandpos();
         }
     }
 
@@ -209,8 +287,9 @@ public class EnemyAI : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    void EnableWeapon()
+    void EnableWeapon(int index)
     {
+        Weapon = Weapons[index];
         Weapon.SetActive(true);
     }
 
@@ -224,5 +303,16 @@ public class EnemyAI : MonoBehaviourPunCallbacks
     {
         animator.SetFloat("Blend", agent.velocity.magnitude);
         animator.SetBool("hasGun", hasWeapon);
+    }
+
+    IEnumerator CheckTeam()
+    {
+        yield return new WaitForSeconds(10);
+        foreach (GameObject member in TeamMembers)
+        {
+            if (!member)
+                TeamMembers.Remove(member);
+        }
+        StartTeamChecking();
     }
 }
