@@ -47,6 +47,8 @@ MonoBehaviour:
   - StartReloadAnimation
   - RPC_MuzzleFlash
   - RPC_Damage
+  - FlashOff
+  - FlashOn
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

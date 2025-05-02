@@ -35,7 +35,7 @@ public class PlayerHealthSystem : MonoBehaviourPunCallbacks
     public void Death()
     {
         characterController.enabled = false;
-        transform.position = new Vector3(0f, 3f, 0f);
+        transform.position = new Vector3(0f, 10f, 0f);
         characterController.enabled = true;
         health = maxHealth;
     }

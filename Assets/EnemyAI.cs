@@ -177,8 +177,8 @@ public class EnemyAI : MonoBehaviourPunCallbacks
 
     void MoveToRandpos()
     {
-        float RandX = UnityEngine.Random.Range(-500, 500);
-        float RandZ = UnityEngine.Random.Range(-500, 500);
+        float RandX = UnityEngine.Random.Range(-2000, 2000);
+        float RandZ = UnityEngine.Random.Range(-2000, 2000);
 
         Vector3 RandPos = new Vector3(RandX, 4, RandZ);
         agent.SetDestination(RandPos);
@@ -242,7 +242,7 @@ public class EnemyAI : MonoBehaviourPunCallbacks
         else
             agent.SetDestination(EnemyPlayer.transform.position);
 
-        Vector3 direction = new Vector3(EnemyPlayer.transform.position.x, EnemyPlayer.transform.localScale.y/2, EnemyPlayer.transform.position.z) - transform.position;
+        Vector3 direction = new Vector3(EnemyPlayer.transform.position.x, EnemyPlayer.transform.position.y-EnemyPlayer.transform.localScale.y, EnemyPlayer.transform.position.z) - transform.position;
         if (direction != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(direction);
