@@ -54,6 +54,7 @@ MonoBehaviour:
   - RPC_ShootEffects
   - RPC_ReloadAnimation
   - RPC_FireGun
+  - FireAnimation
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

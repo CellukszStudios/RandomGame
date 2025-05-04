@@ -25,6 +25,7 @@ public class WeaponSystem : MonoBehaviourPunCallbacks
 
     bool canShoot = true;
     bool isReloading = false;
+    bool canReload = true;
 
     private void Start()
     {
@@ -67,7 +68,7 @@ public class WeaponSystem : MonoBehaviourPunCallbacks
         anim.SetBool("holdingWeapon", true);
         local_anim.SetBool("holdingWeapon", true);
         LeftHandConstraint.weight = 1;
-        view.RPC("RPC_TurnOnWeapon", RpcTarget.Others);
+        view.RPC("RPC_TurnOnWeapon", RpcTarget.OthersBuffered);
     }
 
     void ReloadWeapon()
@@ -91,7 +92,7 @@ public class WeaponSystem : MonoBehaviourPunCallbacks
         Weapon.SetActive(false);
         anim.SetBool("holdingWeapon", false);
         local_anim.SetBool("holdingWeapon", false);
-        view.RPC("RPC_TurnOffWeapon", RpcTarget.Others);
+        view.RPC("RPC_TurnOffWeapon", RpcTarget.OthersBuffered);
         LeftHandConstraint.weight = 0;
         LeftHandIK.position = Vector3.zero;
     }
@@ -128,8 +129,12 @@ public class WeaponSystem : MonoBehaviourPunCallbacks
                 Quaternion rotation = Quaternion.LookRotation(hit.normal);
                 PhotonNetwork.Instantiate(weapon_script.HitEffect.name, hit.point, rotation);
                 PhotonNetwork.Instantiate(weapon_script.HitEffectSound.name, hit.point, Quaternion.identity);
+                if (hit.collider.gameObject.tag == "Enemy")
+                {
+                    hit.collider.gameObject.GetComponent<EnemyAI>().Damage(weapon_script.damage);
+                }
             }
-            view.RPC("RPC_ShootEffects", RpcTarget.All);
+            ShootEffects();
             local_anim.SetTrigger("Fire");
             canShoot = false;
             weapon_script.currentAmmo--;
@@ -137,8 +142,7 @@ public class WeaponSystem : MonoBehaviourPunCallbacks
         }
     }
 
-    [PunRPC]
-    public void RPC_ShootEffects()
+    void ShootEffects()
     {
         GameObject muzFlash = PhotonNetwork.Instantiate(weapon_script.MuzzleFlashObj.name, weapon_script.spawn.position, weapon_script.spawn.rotation);
         muzFlash.transform.SetParent(weapon_script.spawn, true);
@@ -146,6 +150,12 @@ public class WeaponSystem : MonoBehaviourPunCallbacks
 
         GameObject sound = PhotonNetwork.Instantiate(weapon_script.ShootSound.name, transform.position, Quaternion.identity);
         muzFlash.transform.SetParent(transform, true);
+        view.RPC("FireAnimation", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void FireAnimation()
+    {
         anim.SetTrigger("Fire");
     }
 
@@ -171,8 +181,10 @@ public class WeaponSystem : MonoBehaviourPunCallbacks
     {
         LeftHandConstraint.weight = 0;
         local_anim.SetTrigger("reload");
+        canShoot = false;
         yield return new WaitForSeconds(weapon_script.reloadTime);
         isReloading = false;
+        canShoot = true;
         LeftHandConstraint.weight = 1;
         weapon_script.currentAmmo = weapon_script.maxAmmo;
     }

@@ -37,6 +37,8 @@ public class EnemyAI : MonoBehaviourPunCallbacks
     public GameObject EnemyPlayer;
     public GameObject Boss;
     public RecruiteList recruite_list;
+    public Rigidbody[] rbs;
+    bool isDead = false;
 
     public enum states
     {
@@ -61,7 +63,12 @@ public class EnemyAI : MonoBehaviourPunCallbacks
         view = GetComponent<PhotonView>();
         agent = GetComponent<NavMeshAgent>();
 
-        if (PhotonNetwork.IsMasterClient)
+        foreach (Rigidbody rb in rbs)
+        {
+            rb.isKinematic = true;
+        }
+
+        if (view.IsMine)
         {
             current_state = states.Roam;
             StartTeamChecking();
@@ -121,7 +128,10 @@ public class EnemyAI : MonoBehaviourPunCallbacks
 
     private void Update()
     {
-        if (!PhotonNetwork.IsMasterClient) return;
+        if (!view.IsMine) return;
+        if (isDead)
+            return;
+
         UpdateAnimations();
         StateManager();
         Behaviour();
@@ -277,6 +287,31 @@ public class EnemyAI : MonoBehaviourPunCallbacks
             weapon_script = Weapon.GetComponent<WeaponScript>();
             agent.SetDestination(transform.position);
             MoveToRandpos();
+        }
+    }
+
+    public void Damage(float amount)
+    {
+        view.RPC("RPC_Damage", RpcTarget.AllBuffered, amount);
+    }
+
+    [PunRPC]
+    public void RPC_Damage(float amount) 
+    { 
+        Health -= amount;
+        if (Health <= 0)
+            Death();
+    }
+
+    public void Death()
+    {
+        isDead = true;
+        animator.enabled = false;
+        Destroy(agent);
+        Destroy(GetComponent<CapsuleCollider>());
+        foreach (Rigidbody rb in rbs)
+        {
+            rb.isKinematic = false;
         }
     }
 

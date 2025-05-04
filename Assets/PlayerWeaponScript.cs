@@ -9,6 +9,7 @@ public class PlayerWeaponScript : MonoBehaviourPunCallbacks
     public int maxAmmo = 30;
     public int currentAmmo = 30;
     public int shootDistance = 3000;
+    public int damage = 15;
 
     [Header("Script Variables")]
     public GameObject ShootSound;
