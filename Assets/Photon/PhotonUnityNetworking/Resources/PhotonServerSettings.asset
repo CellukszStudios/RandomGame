@@ -49,6 +49,11 @@ MonoBehaviour:
   - RPC_Damage
   - FlashOff
   - FlashOn
+  - RPC_TurnOffWeapon
+  - RPC_TurnOnWeapon
+  - RPC_ShootEffects
+  - RPC_ReloadAnimation
+  - RPC_FireGun
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

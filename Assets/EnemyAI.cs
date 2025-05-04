@@ -242,7 +242,7 @@ public class EnemyAI : MonoBehaviourPunCallbacks
         else
             agent.SetDestination(EnemyPlayer.transform.position);
 
-        Vector3 direction = new Vector3(EnemyPlayer.transform.position.x, EnemyPlayer.transform.position.y-EnemyPlayer.transform.localScale.y, EnemyPlayer.transform.position.z) - transform.position;
+        Vector3 direction = new Vector3(EnemyPlayer.transform.position.x, EnemyPlayer.transform.position.y-EnemyPlayer.transform.localScale.y/2, EnemyPlayer.transform.position.z) - transform.position;
         if (direction != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(direction);

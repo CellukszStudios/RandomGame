@@ -18,6 +18,7 @@ public class PlayerMovement : MonoBehaviour
 
     Vector3 velocity;
     bool isGrounded;
+    public Transform camera;
 
     [Header("Animations")]
     public Animator animator;
@@ -51,6 +52,7 @@ public class PlayerMovement : MonoBehaviour
         Vector3 move = transform.right * x + transform.forward * z;
 
         characterController.Move(move * speed * Time.deltaTime);
+        animator.SetFloat("Blend", camera.transform.localRotation.x);
 
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
