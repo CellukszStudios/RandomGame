@@ -199,7 +199,9 @@ public class EnemyAI : MonoBehaviourPunCallbacks
                 if (member)
                 {
                     Vector3 RandRandPos = new Vector3(RandPos.x + UnityEngine.Random.Range(-15, 15), RandPos.y, RandPos.z + UnityEngine.Random.Range(-15, 15));
-                    member.GetComponent<EnemyAI>().agent.SetDestination(RandRandPos);
+                    NavMeshAgent member_agent = member.GetComponent<EnemyAI>().agent;
+                    if (member_agent)
+                        member_agent.SetDestination(RandRandPos);
                 }
             }
         }
