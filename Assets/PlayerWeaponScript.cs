@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 using Photon.Pun;
 
 public class PlayerWeaponScript : MonoBehaviourPunCallbacks
@@ -16,6 +17,8 @@ public class PlayerWeaponScript : MonoBehaviourPunCallbacks
     public GameObject MuzzleFlashObj;
     public GameObject HitEffect;
     public GameObject HitEffectSound;
+
+    [Header("Transforms")]
     public Transform spawn;
     public Transform hand_target;
 

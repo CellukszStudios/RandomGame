@@ -16,6 +16,7 @@ public class WeaponSystem : MonoBehaviourPunCallbacks
     private PlayerWeaponScript weapon_script;
     public Transform Camera;
     public LayerMask PlayerLayer;
+
     [Header("AnimationRigging")]
     public Transform LeftHandIK;
     public TwoBoneIKConstraint LeftHandConstraint;
@@ -73,7 +74,7 @@ public class WeaponSystem : MonoBehaviourPunCallbacks
 
     void ReloadWeapon()
     {
-        if (Input.GetKeyDown(KeyCode.R) && !isReloading)
+        if (Input.GetKeyDown(KeyCode.R) && !isReloading && canReload)
         {
             isReloading = true;
             StartCoroutine(Reload());
@@ -121,8 +122,15 @@ public class WeaponSystem : MonoBehaviourPunCallbacks
 
     private void Shoot()
     {
+        if (Input.GetMouseButtonUp(0))
+        {
+            canReload = true;
+        }
+
         if (Input.GetMouseButton(0) && Weapon && Weapon.active && weapon_script.currentAmmo > 0 && canShoot)
         {
+            LeftHandConstraint.weight = 1;
+            canReload = false;
             RaycastHit hit;
             if (Physics.Raycast(Camera.position, Camera.forward, out hit, weapon_script.shootDistance, ~PlayerLayer))
             {
