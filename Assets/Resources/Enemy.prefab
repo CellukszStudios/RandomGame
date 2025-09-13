@@ -426,6 +426,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   Weapon: {fileID: 0}
+  BulletFlash: {fileID: 0}
   EnemyPlayer: {fileID: 0}
   Boss: {fileID: 0}
   recruite_list: {fileID: 0}
@@ -3616,6 +3617,7 @@ MonoBehaviour:
   damage: 10
   reload_time: 2
   MuzzleFlash: {fileID: 564892591165537678, guid: a854c66c543078b46839ff855c386f71, type: 3}
+  BulletFlash: {fileID: 0}
   BulletImpactEffect: {fileID: 100002, guid: 381e6427c4b62664c8cd16b8cfc09da4, type: 3}
   ShotSound: {fileID: 6479682013500601005, guid: 4c065e7a90233624e8e6f15bf7256aca, type: 3}
   ImpactSound: {fileID: 6479682013500601005, guid: 02c598d9bf97f5a448901496ed3a1abf, type: 3}
@@ -4425,6 +4427,7 @@ MonoBehaviour:
   damage: 15
   reload_time: 3
   MuzzleFlash: {fileID: 564892591165537678, guid: a854c66c543078b46839ff855c386f71, type: 3}
+  BulletFlash: {fileID: 8211121513565874722, guid: 7f32bda171a76374ba0cc0fc629bf1f5, type: 3}
   BulletImpactEffect: {fileID: 100002, guid: 381e6427c4b62664c8cd16b8cfc09da4, type: 3}
   ShotSound: {fileID: 6479682013500601005, guid: 4c065e7a90233624e8e6f15bf7256aca, type: 3}
   ImpactSound: {fileID: 6479682013500601005, guid: 02c598d9bf97f5a448901496ed3a1abf, type: 3}

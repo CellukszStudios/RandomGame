@@ -6,6 +6,7 @@ public class FlashLight : MonoBehaviourPunCallbacks
     private PhotonView view;
 
     public GameObject Flashlight;
+    public GameObject FlashlightBody;
 
     private void Start()
     {
@@ -29,11 +30,13 @@ public class FlashLight : MonoBehaviourPunCallbacks
     public void FlashOn()
     {
         Flashlight.SetActive(true);
+        FlashlightBody.SetActive(true);
     }
 
     [PunRPC]
     public void FlashOff()
     {
         Flashlight.SetActive(false);
+        FlashlightBody.SetActive(false);
     }
 }

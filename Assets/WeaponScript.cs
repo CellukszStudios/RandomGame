@@ -15,6 +15,7 @@ public class WeaponScript : MonoBehaviourPunCallbacks
     [Header("Weapon Attributes")]
     private PhotonView view;
     public GameObject MuzzleFlash;
+    public GameObject BulletFlash;
     public GameObject BulletImpactEffect;
     public GameObject ShotSound;
     public GameObject ImpactSound;
@@ -52,6 +53,10 @@ public class WeaponScript : MonoBehaviourPunCallbacks
         canShoot = false;
         PhotonNetwork.Instantiate(MuzzleFlash.name, muzzle_spawn.position, muzzle_spawn.rotation);
         PhotonNetwork.Instantiate(ShotSound.name, muzzle_spawn.position, Quaternion.identity);
+        if (Random.value < 0.1f)
+        {
+            PhotonNetwork.Instantiate(BulletFlash.name, muzzle_spawn.position, PlayerBody.rotation);
+        }
         current_ammo--;
         RaycastHit hit;
         if (Physics.Raycast(PlayerBody.position+transform.up * 1, PlayerBody.forward, out hit, distance))

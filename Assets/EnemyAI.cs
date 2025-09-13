@@ -30,6 +30,7 @@ public class EnemyAI : MonoBehaviourPunCallbacks
 
     [Header("Weapons")]
     public GameObject Weapon;
+    public GameObject BulletFlash;
     bool hasWeapon = false;
     bool isReloading = false;
     private WeaponScript weapon_script;
