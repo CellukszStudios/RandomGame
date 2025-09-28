@@ -55,6 +55,7 @@ MonoBehaviour:
   - RPC_ReloadAnimation
   - RPC_FireGun
   - FireAnimation
+  - RPC_DestroySelf
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0
